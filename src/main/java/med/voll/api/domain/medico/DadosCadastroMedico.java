@@ -13,7 +13,7 @@ public record DadosCadastroMedico(@NotBlank
                                   @NotBlank
                                   @Email
                                   String email,
-                                  
+
                                   @NotBlank
                                   String telefone,
 
