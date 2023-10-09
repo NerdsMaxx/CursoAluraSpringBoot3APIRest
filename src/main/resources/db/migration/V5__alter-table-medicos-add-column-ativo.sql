@@ -1,1 +1,1 @@
-alter table medicos add ativo tinyint not null;
+alter table medicos add ativo boolean not null;

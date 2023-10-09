@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
-@RequestMapping( "pacientes" )
+@RequestMapping("pacientes")
 public class PacienteController {
     
     @Autowired
@@ -22,58 +22,58 @@ public class PacienteController {
     
     @PostMapping
     @Transactional
-    public ResponseEntity cadastrar( @RequestBody @Valid
-                                     DadosCadastroPaciente dados, UriComponentsBuilder uriComponentsBuilder ) {
-        var paciente = new Paciente( dados );
-        repository.save( paciente );
+    public ResponseEntity cadastrar(@RequestBody @Valid
+                                    DadosCadastroPaciente dados, UriComponentsBuilder uriComponentsBuilder) {
+        var paciente = new Paciente(dados);
+        repository.save(paciente);
         
-        var uri = uriComponentsBuilder.path( "/pacientes/{id}" )
-                                      .buildAndExpand( paciente.getId() )
+        var uri = uriComponentsBuilder.path("/pacientes/{id}")
+                                      .buildAndExpand(paciente.getId())
                                       .toUri();
         
-        return ResponseEntity.created( uri )
-                             .body( new DadosDetalhamentoPaciente( paciente ) );
+        return ResponseEntity.created(uri)
+                             .body(new DadosDetalhamentoPaciente(paciente));
     }
     
     @GetMapping
     public ResponseEntity<Page<DadosListagemPaciente>> listar(
-            @PageableDefault( size = 10, sort = { "nome" }, page = 0 ) Pageable paginacao ) {
-        var page = repository.findAllByAtivoTrue( paginacao )
-                             .map( DadosListagemPaciente::new );
+            @PageableDefault(size = 10, sort = {"nome"}, page = 0) Pageable paginacao) {
+        var page = repository.findAllByAtivoTrue(paginacao)
+                             .map(DadosListagemPaciente::new);
         
-        return ResponseEntity.ok( page );
+        return ResponseEntity.ok(page);
     }
     
-    @PutMapping( "/{id}" )
+    @PutMapping("/{id}")
     @Transactional
     public ResponseEntity atualizar(
-            @PathVariable Long id, @RequestBody DadosAtualizacaoPaciente dados ) {
-        var paciente = repository.getReferenceById( id );
-        paciente.atualizar( dados );
+            @PathVariable Long id, @RequestBody DadosAtualizacaoPaciente dados) {
+        var paciente = repository.getReferenceById(id);
+        paciente.atualizar(dados);
         
-        return ResponseEntity.ok( paciente );
+        return ResponseEntity.ok(paciente);
     }
     
-    @DeleteMapping( "/{id}" )
+    @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity excluir( @PathVariable Long id ) {
-        var paciente = repository.getReferenceById( id );
+    public ResponseEntity excluir(@PathVariable Long id) {
+        var paciente = repository.getReferenceById(id);
         paciente.excluir();
         
         return ResponseEntity.noContent()
                              .build();
     }
     
-    @GetMapping( "/{id}" )
-    public ResponseEntity detalhar( @PathVariable Long id ) {
+    @GetMapping("/{id}")
+    public ResponseEntity detalhar(@PathVariable Long id) {
         try {
-            var paciente = repository.getReferenceById( id );
+            var paciente = repository.getReferenceById(id);
             
-            return ResponseEntity.ok( new DadosDetalhamentoPaciente( paciente ) );
-        } catch ( Exception erro ) {
-            if ( erro instanceof EntityNotFoundException ) {
-                return ResponseEntity.status( HttpStatus.CONFLICT )
-                                     .body( "Não foi encontrado o paciente." );
+            return ResponseEntity.ok(new DadosDetalhamentoPaciente(paciente));
+        } catch (Exception erro) {
+            if (erro instanceof EntityNotFoundException) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                                     .body("Não foi encontrado o paciente.");
             }
             
             throw erro;
